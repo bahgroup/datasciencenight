@@ -6,3 +6,5 @@ These are a collection of R scripts related to BAH Data Science Night. If you wo
 After that, all you need to do to is drop one of these functions in your working directory and call the function at the beginning of your analysis file at the beginning like this...
 
 `source("getGrantsGovData.R")`
+
+After you've sourced a function, you can easily call it in your analysis file.
