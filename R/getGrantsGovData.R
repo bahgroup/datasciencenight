@@ -14,7 +14,7 @@ getGrantsGovData = function(keywords=c(), showNonCompeted=TRUE, showClosed=TRUE,
   my.api.key = paste0("&api_key=",my.key)
   api.url = "https://api.data.gov/gsa/fbopen/v0/opps?"
   query= paste0("&data_source=grants.gov&show_noncompeted=", tolower(as.character(showNonCompeted)), 
-                                        "&show_closed=true", tolower(as.character(showClosed)),
+                                        "&show_closed=", tolower(as.character(showClosed)),
                                          gsub(" ","+",paste0(keywords, collapse="&"))
                 )
 
