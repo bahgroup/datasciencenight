@@ -14,9 +14,10 @@ getGrantsGovData = function(keywords=c(), showNonCompeted=TRUE, showClosed=TRUE,
   my.api.key = paste0("&api_key=",my.key)
   api.url = "https://api.data.gov/gsa/fbopen/v0/opps?"
   query= paste0("&data_source=grants.gov&show_noncompeted=", tolower(as.character(showNonCompeted)), 
-                                        "&show_closed=", tolower(as.character(showClosed)),
-                                         gsub(" ","+",paste0(keywords, collapse="&"))
+                 "&show_closed=", tolower(as.character(showClosed)),
+                 "&q=", gsub(" ","+",paste0(keywords, collapse="&"))
                 )
+
 
 
   callback = getURL(paste0(api.url,query,my.api.key), ssl.verifypeer=F)
@@ -44,11 +45,12 @@ getGrantsGovData = function(keywords=c(), showNonCompeted=TRUE, showClosed=TRUE,
 
 
   # Iterate through each page of results and concatenate the results as a dataframe.
-  for(i in 1:round(num.results/10)-1){
-    temp.call = getURL(paste0(api.url,query,"&start=",i*10+1, my.api.key), ssl.verifypeer=F)
+   for(i in 1:floor(num.results/10)){
+    temp.call = getURL(paste0(api.url,query,"&start=",i*10, my.api.key), ssl.verifypeer=F)
     temp.data = fromJSON(temp.call)$docs
     results = rbind(results, temp.data[,rel.fields])
   }
+
   results = unique(results)
   return(results)
 }
