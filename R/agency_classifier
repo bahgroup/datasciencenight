@@ -1,0 +1,37 @@
+
+add_data <- read.csv("C:/Users/570207/Documents/Sample Data/grants_gov.csv")
+file_loc <- data.frame(add_data$description)
+library(tm)
+corp <- Corpus(DataframeSource(file_loc))
+
+tdm = TermDocumentMatrix(corp,
+                         control = list(removePunctuation = TRUE,
+                                        stopwords = c(stopwords("english")),
+                                        removeNumbers = TRUE, tolower = TRUE))
+
+my_tdm<-as.matrix(tdm)
+model_matrix<-t(my_tdm) #need to transform the matrix to put a classifier on it
+agency<-data.frame(add_data$agency)
+bind_matrix<-cbind(agency,model_matrix) #columnbind the agency with the term doc matrix
+library(rpart)
+fit<-rpart(add_data.agency ~ ., method="class", data=bind_matrix) #this may take awhile to run
+printcp(fit) # display the results 
+plotcp(fit) # visualize cross-validation results 
+summary(fit) # detailed summary of splits
+
+library(rattle)
+asRules(fit)
+pfit<- prune(fit, cp=0.01) # from cptable   
+
+# plot the pruned tree 
+plot(pfit, uniform=TRUE, 
+     main="Pruned Tree")
+text(pfit, use.n=TRUE, all=TRUE, cex=.8)
+
+library(wordcloud)
+word_freqs = sort(rowSums(my_tdm), decreasing=TRUE)
+# create a data frame with words and their frequencies
+dm = data.frame(word=names(word_freqs), freq=word_freqs)
+wordcloud(dm$word, dm$freq, random.order=FALSE, colors=brewer.pal(8, "Dark2"))
+
+
